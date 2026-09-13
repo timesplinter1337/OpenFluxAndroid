@@ -1,5 +1,7 @@
 package io.github.p1neapplexpress.openflux.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,7 @@ import android.widget.Button
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -39,6 +42,20 @@ class AddTunFragment : BaseFragment() {
     private var debug = false
     private var editing: Tunnel? = null
 
+    /** Token field, kept around so the MAX sign-in result can fill it in. */
+    private var maxTokenField: TextView? = null
+
+    private val maxLoginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val token = result.data?.getStringExtra(MaxLoginActivity.EXTRA_TOKEN)
+            if (result.resultCode == Activity.RESULT_OK && !token.isNullOrEmpty()) {
+                maxTokenField?.text = token
+                Toast.makeText(requireContext(), R.string.max_login_success, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), R.string.max_login_failed, Toast.LENGTH_LONG).show()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val raw = arguments?.getString(ARG_EDIT_JSON)
@@ -60,8 +77,15 @@ class AddTunFragment : BaseFragment() {
         val docUrl = view.findViewById<TextView>(R.id.documentUrl)
         val maxToken = view.findViewById<TextView>(R.id.maxToken)
         val maxUid = view.findViewById<TextView>(R.id.maxUserId)
+        val maxLogin = view.findViewById<Button>(R.id.loginMaxButton)
         val name = view.findViewById<TextView>(R.id.name)
         val save = view.findViewById<Button>(R.id.saveButton)
+
+        maxTokenField = maxToken
+
+        maxLogin.setOnClickListener {
+            maxLoginLauncher.launch(Intent(requireContext(), MaxLoginActivity::class.java))
+        }
 
         // ─── Заполнение при редактировании ───
         editing?.let { t ->
@@ -154,6 +178,11 @@ class AddTunFragment : BaseFragment() {
             transportLabel.text = getString(R.string.yandex_docs_backend)
             debugLabel.text = getString(R.string.off)
         }
+    }
+
+    override fun onDestroyView() {
+        maxTokenField = null
+        super.onDestroyView()
     }
 
     private fun argValue(payload: List<String>, key: String): String {
