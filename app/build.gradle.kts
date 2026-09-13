@@ -12,8 +12,8 @@ android {
         applicationId = "io.github.p1neapplexpress.openflux"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.1.0-maxlogin"
+        versionCode = 3
+        versionName = "1.2.0-adminnode"
 
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
@@ -33,6 +33,7 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
+                "proguard-jsch.pro",
             )
         }
         debug {
@@ -72,4 +73,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("io.github.g00fy2.quickie:quickie-bundled:1.10.0")
+    // Maintained JSch fork: modern ciphers/KEX, pure Java, works on Android.
+    implementation("com.github.mwiede:jsch:0.2.17")
 }
