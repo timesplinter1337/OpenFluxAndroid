@@ -200,6 +200,25 @@
             app:icon="@drawable/ic_add_qr"
             app:iconTint="@color/text_secondary" />
 
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/settingsButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:text="@string/settings_button"
+            android:textAllCaps="false"
+            android:textColor="@color/text_secondary"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:strokeColor="@color/bg_card_stroke"
+            app:strokeWidth="1dp"
+            app:cornerRadius="14dp" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
