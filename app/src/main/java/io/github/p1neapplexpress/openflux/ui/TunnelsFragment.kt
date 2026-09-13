@@ -119,6 +119,13 @@ class TunnelsFragment : BaseFragment() {
         view.findViewById<View>(R.id.addButton).setOnClickListener {
             qrScanner.launch(null)
         }
+        view.findViewById<View>(R.id.settingsButton).setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.main, SettingsFragment.new())
+                .addToBackStack("settings")
+                .commit()
+        }
 
         observe()
     }
