@@ -34,6 +34,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.MaxLoginActivity"
+            android:exported="false"
+            android:label="@string/max_login_title" />
+
         <service
             android:name=".service.SocksVpnService"
             android:exported="false"
