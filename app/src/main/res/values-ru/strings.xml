@@ -57,6 +57,13 @@
     <string name="config_saved">Сохранено</string>
     <string name="config_deleted">Удалено</string>
 
+    <!-- Вход через MAX -->
+    <string name="max_login_title">Вход в MAX</string>
+    <string name="max_login_button">Войти через MAX</string>
+    <string name="max_login_hint">Войдите, и токен подставится автоматически. User ID — это аккаунт exit-ноды, его нужно ввести вручную.</string>
+    <string name="max_login_success">Токен получен</string>
+    <string name="max_login_failed">Не удалось найти токен. Введите его вручную.</string>
+
     <!-- Ошибки состояния -->
     <string name="err_service_not_connected">Сервис не подключён</string>
     <string name="err_vpn_iface_not_ready">VPN-интерфейс не готов</string>

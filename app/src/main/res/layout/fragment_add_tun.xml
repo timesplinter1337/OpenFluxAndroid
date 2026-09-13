@@ -199,6 +199,28 @@
             android:orientation="vertical"
             android:visibility="gone">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/loginMaxButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#334F7CFF"
+                android:text="@string/max_login_button"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:textSize="15sp"
+                app:cornerRadius="18dp" />
+
+            <TextView
+                android:id="@+id/maxLoginHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="4dp"
+                android:text="@string/max_login_hint"
+                android:textColor="#98A0AE"
+                android:textSize="12sp" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

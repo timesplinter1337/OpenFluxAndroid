@@ -55,6 +55,13 @@
     <string name="config_saved">Saved</string>
     <string name="config_deleted">Deleted</string>
 
+    <!-- MAX sign-in -->
+    <string name="max_login_title">MAX sign-in</string>
+    <string name="max_login_button">Sign in with MAX</string>
+    <string name="max_login_hint">Sign in to fill the token automatically. The user ID is the exit node account, so enter it manually.</string>
+    <string name="max_login_success">Token captured</string>
+    <string name="max_login_failed">Could not find the token. Enter it manually.</string>
+
     <!-- State errors -->
     <string name="err_service_not_connected">Service is not connected</string>
     <string name="err_vpn_iface_not_ready">VPN interface is not ready</string>
