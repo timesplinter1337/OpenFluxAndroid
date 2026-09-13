@@ -54,6 +54,18 @@
     <string name="cannot_delete_active">Stop the VPN first</string>
     <string name="config_saved">Saved</string>
     <string name="config_deleted">Deleted</string>
+
+    <!-- State errors -->
+    <string name="err_service_not_connected">Service is not connected</string>
+    <string name="err_vpn_iface_not_ready">VPN interface is not ready</string>
+    <string name="err_transport_not_started">Transport failed to start</string>
+    <string name="err_tun2socks_not_started">tun2socks failed to start</string>
+    <string name="err_transport_binary_missing">Transport binary not found</string>
+    <string name="err_invalid_fd">Invalid tun fd</string>
+    <string name="err_pdnsd_missing">pdnsd binary not found</string>
+    <string name="err_tun2socks_missing">tun2socks binary not found</string>
+    <string name="err_sendfd_failed">Failed to send tun fd</string>
+
     <string name="notify_action_stop">Disconnect</string>
     <string name="notify_msg_idle">Idle</string>
     <string name="notify_msg_connecting">Connecting…</string>
