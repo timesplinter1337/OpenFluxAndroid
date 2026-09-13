@@ -76,13 +76,37 @@ class NodeProvisioner(private val cfg: NodeConfig) {
             echo "[openflux] installing build prerequisites"
             if command -v apt-get >/dev/null 2>&1; then
               ${sudo}apt-get update -y
-              ${sudo}env DEBIAN_FRONTEND=noninteractive apt-get install -y git curl tar ca-certificates
+              ${sudo}env DEBIAN_FRONTEND=noninteractive apt-get install -y \
+                git curl tar ca-certificates build-essential libc6-dev pkg-config
             elif command -v dnf >/dev/null 2>&1; then
-              ${sudo}dnf install -y git curl tar ca-certificates
+              ${sudo}dnf install -y git curl tar ca-certificates gcc glibc-devel make pkgconf-pkg-config
             elif command -v yum >/dev/null 2>&1; then
-              ${sudo}yum install -y git curl tar ca-certificates
+              ${sudo}yum install -y git curl tar ca-certificates gcc glibc-devel make pkgconfig
+            elif command -v apk >/dev/null 2>&1; then
+              ${sudo}apk add --no-cache git curl tar ca-certificates build-base
             else
-              echo "[openflux] unknown package manager, assuming git/curl/tar are present"
+              echo "[openflux] unknown package manager, assuming git/curl/tar/cc are present"
+            fi
+
+            # cgo needs both a compiler and the libc headers. Most VPS images ship
+            # gcc without them, which makes the runtime/cgo bootstrap fail with
+            # "fatal error: stdlib.h: No such file or directory".
+            echo "[openflux] probing C toolchain for cgo"
+            CGO_OK=0
+            CC_BIN="${'$'}{CC:-cc}"
+            command -v "${'$'}CC_BIN" >/dev/null 2>&1 || CC_BIN=gcc
+            if command -v "${'$'}CC_BIN" >/dev/null 2>&1; then
+              printf '#include <stdlib.h>\n#include <pthread.h>\nint main(void){return 0;}\n' \
+                >/tmp/openflux-cc-probe.c
+              if "${'$'}CC_BIN" /tmp/openflux-cc-probe.c -o /tmp/openflux-cc-probe >/dev/null 2>&1; then
+                CGO_OK=1
+              fi
+              rm -f /tmp/openflux-cc-probe.c /tmp/openflux-cc-probe
+            fi
+            if [ "${'$'}CGO_OK" = "1" ]; then
+              echo "[openflux] C toolchain OK, building with cgo enabled"
+            else
+              echo "[openflux] no usable C toolchain/libc headers, building with CGO_ENABLED=0"
             fi
 
             if /usr/local/go/bin/go version >/dev/null 2>&1; then
@@ -108,6 +132,7 @@ class NodeProvisioner(private val cfg: NodeConfig) {
             echo "[openflux] building, this takes a few minutes"
             cd /opt/openflux/src
             ${sudo}env PATH=/usr/local/go/bin:/usr/bin:/bin HOME=/root GOFLAGS=-buildvcs=false \
+              CGO_ENABLED=${'$'}CGO_OK \
               go build -o /opt/openflux/universal-bypass-tool .
 
             echo "[openflux] writing credentials"
