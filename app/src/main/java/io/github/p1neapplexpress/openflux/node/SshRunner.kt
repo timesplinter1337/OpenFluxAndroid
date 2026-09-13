@@ -35,7 +35,7 @@ class SshRunner(private val cfg: NodeConfig) {
             }
 
             // The stream closes before the channel reports the exit status.
-            var waited = 0
+            var waited = 0L
             while (!channel.isClosed && waited < EXIT_WAIT_MS) {
                 Thread.sleep(POLL_MS)
                 waited += POLL_MS
@@ -77,7 +77,7 @@ class SshRunner(private val cfg: NodeConfig) {
 
     private companion object {
         const val CONNECT_TIMEOUT_MS = 20_000
-        const val EXIT_WAIT_MS = 5_000
-        const val POLL_MS = 50
+        const val EXIT_WAIT_MS = 5_000L
+        const val POLL_MS = 50L
     }
 }
