@@ -27,12 +27,26 @@ class AddTunFragment : BaseFragment() {
 
     companion object {
         private const val ARG_EDIT_JSON = "edit_json"
+        private const val ARG_PREFILL_UID = "prefill_uid"
+        private const val ARG_PREFILL_NAME = "prefill_name"
 
         fun new() = AddTunFragment()
 
         fun edit(tunnel: Tunnel): AddTunFragment = AddTunFragment().apply {
             arguments = Bundle().apply {
                 putString(ARG_EDIT_JSON, Json.encodeToString(Tunnel.serializer(), tunnel))
+            }
+        }
+
+        /**
+         * New MAX tunnel pointing at an exit node the user just provisioned,
+         * with the node's account id filled in as --maxUid. The token still has
+         * to be the phone's own MAX account, not the node's.
+         */
+        fun forNode(uid: String, name: String): AddTunFragment = AddTunFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_PREFILL_UID, uid)
+                putString(ARG_PREFILL_NAME, name)
             }
         }
     }
@@ -120,6 +134,17 @@ class AddTunFragment : BaseFragment() {
             save.text = getString(R.string.action_edit)
         }
 
+        // ─── Заполнение при создании туннеля к своей ноде ───
+        val prefillUid = arguments?.getString(ARG_PREFILL_UID)
+        if (editing == null && !prefillUid.isNullOrBlank()) {
+            transport = TransportType.max
+            maxContainer.isVisible = true
+            yandexContainer.isVisible = false
+            transportLabel.text = getString(R.string.max_messenger_backend)
+            maxUid.setText(prefillUid)
+            arguments?.getString(ARG_PREFILL_NAME)?.let { if (it.isNotBlank()) name.setText(it) }
+        }
+
         transportLayout.setOnClickListener {
             it.showTransportDropdown(
                 onYandex = {
@@ -175,7 +200,9 @@ class AddTunFragment : BaseFragment() {
         }
 
         if (editing == null) {
-            transportLabel.text = getString(R.string.yandex_docs_backend)
+            if (prefillUid.isNullOrBlank()) {
+                transportLabel.text = getString(R.string.yandex_docs_backend)
+            }
             debugLabel.text = getString(R.string.off)
         }
     }

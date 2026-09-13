@@ -64,6 +64,38 @@
     <string name="max_login_success">Токен получен</string>
     <string name="max_login_failed">Не удалось найти токен. Введите его вручную.</string>
 
+    <!-- Настройки и режим администратора -->
+    <string name="settings_button">Настройки</string>
+    <string name="settings_title">Настройки</string>
+    <string name="admin_mode">Режим администратора</string>
+    <string name="admin_mode_hint">Позволяет настроить свою exit-ноду по SSH. После этого весь трафик туннеля будет выходить через твою VPS.</string>
+    <string name="node_section">Exit-нода (твоя VPS)</string>
+    <string name="node_host">Хост или IP</string>
+    <string name="node_port">SSH-порт</string>
+    <string name="node_user">SSH-пользователь</string>
+    <string name="node_use_key">Авторизация по приватному ключу</string>
+    <string name="node_password">SSH-пароль</string>
+    <string name="node_private_key">Приватный ключ (PEM)</string>
+    <string name="node_account">MAX-аккаунт ноды</string>
+    <string name="node_login_button">Войти через MAX для ноды</string>
+    <string name="node_login_hint">Ноде нужен свой MAX-аккаунт, отдельный от того, что стоит на телефоне. При входе здесь заберутся её токен и user ID.</string>
+    <string name="node_token">MAX-токен ноды</string>
+    <string name="node_uid">MAX user ID ноды</string>
+    <string name="node_debug">Подробные логи ноды</string>
+    <string name="node_save">Сохранить</string>
+    <string name="node_install">Установить / обновить ноду</string>
+    <string name="node_status">Статус</string>
+    <string name="node_logs">Логи</string>
+    <string name="node_stop">Остановить</string>
+    <string name="node_restart">Перезапустить</string>
+    <string name="node_create_tunnel">Создать туннель к этой ноде</string>
+    <string name="node_host_required">Сначала укажи хост ноды</string>
+    <string name="node_token_required">Сначала войди в MAX для ноды</string>
+    <string name="node_uid_missing">User ID ноды неизвестен. Заполни его.</string>
+    <string name="node_saved">Настройки ноды сохранены</string>
+    <string name="node_busy">Уже выполняется, дождись завершения</string>
+    <string name="node_log_title">Вывод</string>
+
     <!-- Ошибки состояния -->
     <string name="err_service_not_connected">Сервис не подключён</string>
     <string name="err_vpn_iface_not_ready">VPN-интерфейс не готов</string>
