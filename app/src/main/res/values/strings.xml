@@ -62,6 +62,38 @@
     <string name="max_login_success">Token captured</string>
     <string name="max_login_failed">Could not find the token. Enter it manually.</string>
 
+    <!-- Settings / admin mode -->
+    <string name="settings_button">Settings</string>
+    <string name="settings_title">Settings</string>
+    <string name="admin_mode">Administrator mode</string>
+    <string name="admin_mode_hint">Lets you set up your own exit node over SSH. All tunnel traffic then leaves through your VPS.</string>
+    <string name="node_section">Exit node (your VPS)</string>
+    <string name="node_host">Host or IP</string>
+    <string name="node_port">SSH port</string>
+    <string name="node_user">SSH user</string>
+    <string name="node_use_key">Authenticate with a private key</string>
+    <string name="node_password">SSH password</string>
+    <string name="node_private_key">Private key (PEM)</string>
+    <string name="node_account">Node MAX account</string>
+    <string name="node_login_button">Sign in with MAX for the node</string>
+    <string name="node_login_hint">The node needs its own MAX account, separate from the one the phone uses. Signing in here captures its token and user ID.</string>
+    <string name="node_token">Node MAX token</string>
+    <string name="node_uid">Node MAX user ID</string>
+    <string name="node_debug">Verbose node logging</string>
+    <string name="node_save">Save</string>
+    <string name="node_install">Install / update node</string>
+    <string name="node_status">Status</string>
+    <string name="node_logs">Logs</string>
+    <string name="node_stop">Stop</string>
+    <string name="node_restart">Restart</string>
+    <string name="node_create_tunnel">Create tunnel to this node</string>
+    <string name="node_host_required">Enter the node host first</string>
+    <string name="node_token_required">Sign in with MAX for the node first</string>
+    <string name="node_uid_missing">Node user ID is unknown. Fill it in first.</string>
+    <string name="node_saved">Node settings saved</string>
+    <string name="node_busy">Already running, wait for it to finish</string>
+    <string name="node_log_title">Output</string>
+
     <!-- State errors -->
     <string name="err_service_not_connected">Service is not connected</string>
     <string name="err_vpn_iface_not_ready">VPN interface is not ready</string>
