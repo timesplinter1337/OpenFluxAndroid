@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.webkit.CookieManager
+import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
@@ -34,6 +35,11 @@ import org.json.JSONObject
  * the opcode 19 login-by-token, and read the signed-in account's own profile id
  * straight from the SYNC response. Doing this in the page context means MAX's
  * own CSP already whitelists the websocket host.
+ *
+ * Each launch starts from a cleared session (see onCreate). MAX otherwise
+ * persists its cookies + IndexedDB in the shared WebView and silently resumes
+ * whichever account signed in last, which prevented switching between the node
+ * account and the calling account.
  *
  * Note: MAX exposes no public OAuth flow for third-party apps, so none of this
  * is a documented contract and may change without notice. Manual token/id entry
@@ -139,6 +145,19 @@ class MaxLoginActivity : AppCompatActivity() {
 
         web = findViewById(R.id.maxWebView)
         progress = findViewById(R.id.maxProgress)
+
+        // Start every login from a clean, signed-out session so the user can
+        // switch between the node account and the calling account. MAX otherwise
+        // reuses its persisted cookies/IndexedDB in the shared WebView and
+        // silently resumes whichever account signed in last. The token we need
+        // is already persisted by the caller, so discarding the web session is
+        // safe.
+        CookieManager.getInstance().removeAllCookies(null)
+        CookieManager.getInstance().flush()
+        WebStorage.getInstance().deleteAllData()
+        web.clearCache(true)
+        web.clearFormData()
+        web.clearHistory()
 
         CookieManager.getInstance().setAcceptCookie(true)
         CookieManager.getInstance().setAcceptThirdPartyCookies(web, true)
