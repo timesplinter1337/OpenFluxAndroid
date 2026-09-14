@@ -57,13 +57,17 @@ class SettingsFragment : BaseFragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val capturedToken = result.data?.getStringExtra(MaxLoginActivity.EXTRA_TOKEN)
             val capturedUid = result.data?.getStringExtra(MaxLoginActivity.EXTRA_UID)
+            val debug = result.data?.getStringExtra(MaxLoginActivity.EXTRA_DEBUG)
 
             if (result.resultCode == Activity.RESULT_OK && !capturedToken.isNullOrEmpty()) {
                 token?.setText(capturedToken)
                 if (!capturedUid.isNullOrEmpty()) uid?.setText(capturedUid)
                 persist()
                 toast(R.string.max_login_success)
-                if (capturedUid.isNullOrEmpty()) appendLog(getString(R.string.node_uid_missing))
+                if (capturedUid.isNullOrEmpty()) {
+                    appendLog(getString(R.string.node_uid_missing))
+                    if (!debug.isNullOrEmpty()) appendLog(debug)
+                }
             } else {
                 toast(R.string.max_login_failed)
             }
