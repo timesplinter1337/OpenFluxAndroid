@@ -10,7 +10,10 @@ import android.view.ViewGroup
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import io.github.p1neapplexpress.openflux.R
 import io.github.p1neapplexpress.openflux.event.AppEvent
 import io.github.p1neapplexpress.openflux.event.EventBus
@@ -27,6 +30,8 @@ class LogsFragment : BaseFragment() {
         private const val MAX_LINES = 512
         private const val FLUSH_INTERVAL_MS = 200L
     }
+
+    private val vm: TunnelsViewModel by activityViewModels()
 
     private lateinit var textView: TextView
     private lateinit var scrollView: ScrollView
@@ -64,23 +69,22 @@ class LogsFragment : BaseFragment() {
             if (autoScroll) scrollView.post { scrollView.fullScroll(View.FOCUS_DOWN) }
         }
 
+        // Raw log stream (unchanged): just append lines.
         viewLifecycleOwner.lifecycleScope.launch {
             EventBus.events.collect { ev ->
-                when (ev) {
-                    is AppEvent.LogMessage -> {
-                        enqueue(ev.message)
-                        pipeline.onLog(ev.message)
-                    }
-                    is AppEvent.TransportConnected -> pipeline.onConnected()
-                    is AppEvent.TransportDisconnected -> pipeline.reset()
-                    else -> Unit
-                }
+                if (ev is AppEvent.LogMessage) enqueue(ev.message)
+            }
+        }
+
+        // Progress strip: driven by the app's OWN connection state machine.
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.active.collect { pipeline.onState(it) }
             }
         }
     }
 
     private fun enqueue(message: String) {
-        
         message.split('\n').forEach { if (it.isNotEmpty()) pending.offer(it) }
         if (!flushScheduled) {
             flushScheduled = true
@@ -113,7 +117,6 @@ class LogsFragment : BaseFragment() {
 
         textView.append(toAppend)
 
-        
         val layout = textView.layout
         if (layout != null && textView.lineCount > MAX_LINES) {
             val cut = layout.getLineStart(textView.lineCount - MAX_LINES)
