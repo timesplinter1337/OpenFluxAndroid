@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import io.github.p1neapplexpress.openflux.R
 import io.github.p1neapplexpress.openflux.event.AppEvent
 import io.github.p1neapplexpress.openflux.event.EventBus
+import io.github.p1neapplexpress.openflux.ui.widget.ConnectPipelineView
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -29,6 +30,7 @@ class LogsFragment : BaseFragment() {
 
     private lateinit var textView: TextView
     private lateinit var scrollView: ScrollView
+    private lateinit var pipeline: ConnectPipelineView
     private var autoScroll = true
     private val ts = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
     private val lineColor = ForegroundColorSpan(0xFF666666.toInt())
@@ -46,6 +48,7 @@ class LogsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         textView = view.findViewById(R.id.logs)
         scrollView = view.findViewById(R.id.log_scroll)
+        pipeline = view.findViewById(R.id.pipeline)
 
         view.findViewById<TextView>(R.id.btn_clear).setOnClickListener {
             pending.clear(); totalLines = 0; textView.text = ""
@@ -63,7 +66,15 @@ class LogsFragment : BaseFragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             EventBus.events.collect { ev ->
-                if (ev is AppEvent.LogMessage) enqueue(ev.message)
+                when (ev) {
+                    is AppEvent.LogMessage -> {
+                        enqueue(ev.message)
+                        pipeline.onLog(ev.message)
+                    }
+                    is AppEvent.TransportConnected -> pipeline.onConnected()
+                    is AppEvent.TransportDisconnected -> pipeline.reset()
+                    else -> Unit
+                }
             }
         }
     }

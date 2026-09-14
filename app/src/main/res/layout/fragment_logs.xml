@@ -4,13 +4,20 @@
     android:layout_height="match_parent"
     android:background="#090d16">
 
+    <!-- Connection progress strip -->
+    <io.github.p1neapplexpress.openflux.ui.widget.ConnectPipelineView
+        android:id="@+id/pipeline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <FrameLayout
         android:id="@+id/h"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/log_container_border"
         app:layout_constraintBottom_toTopOf="@id/log_actions"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/pipeline">
 
         <ScrollView
             android:id="@+id/log_scroll"
