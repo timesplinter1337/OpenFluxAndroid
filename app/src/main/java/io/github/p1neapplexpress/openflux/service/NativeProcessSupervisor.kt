@@ -3,6 +3,7 @@ package io.github.p1neapplexpress.openflux.service
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import io.github.p1neapplexpress.openflux.data.AdminRepository
 import io.github.p1neapplexpress.openflux.event.AppEvent
 import io.github.p1neapplexpress.openflux.event.EventBus
 import io.github.p1neapplexpress.openflux.util.Logx
@@ -25,6 +26,13 @@ class NativeProcessSupervisor(private val context: Context) {
     private val running = AtomicBoolean(false)
     private val connected = AtomicBoolean(false)
     private val shuttingDown = AtomicBoolean(false)
+
+    // Verbose transport logging is a throughput killer: --debug makes the native
+    // core emit per-packet lines, each of which we then dispatch to the log bus
+    // and Logcat. Only enable it when the user explicitly turned on debug.
+    private val debug: Boolean by lazy {
+        runCatching { AdminRepository(context).loadNode().debug }.getOrDefault(false)
+    }
 
     val isConnected: Boolean get() = connected.get()
     val isRunning: Boolean get() = running.get()
@@ -50,8 +58,7 @@ class NativeProcessSupervisor(private val context: Context) {
     private fun spawn(transportType: String, payload: List<String>) {
         val libPath = "${context.applicationInfo.nativeLibraryDir}/$NATIVE_LIB"
         try {
-            
-            val cmd = listOf(libPath, "--debug") + payload
+            val cmd = if (debug) listOf(libPath, "--debug") + payload else listOf(libPath) + payload
             Logx.i(TAG, "exec: ${cmd.joinToString(" ")}")
 
             val pb = ProcessBuilder(cmd)
@@ -66,7 +73,7 @@ class NativeProcessSupervisor(private val context: Context) {
                         while (r.readLine().also { line = it } != null) {
                             val l = line ?: continue
                             if (l.isBlank()) continue
-                            android.util.Log.d("NativeStdout", l)
+                            if (debug) android.util.Log.d("NativeStdout", l)
                             EventBus.dispatch(AppEvent.LogMessage(l))
                         }
                     }

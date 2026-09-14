@@ -16,9 +16,15 @@ class Tun2SocksLauncher(private val context: Context) {
         private const val NETIF_IPADDR = "26.26.26.2"
         private const val NETIF_NETMASK = "255.255.255.0"
         private const val NETIF_IP6ADDR = "fdfe:dcba:9876::2"
-        private const val TUN_MTU = 1500
+        // Keep the inner MTU below the transport's payload budget. The tunnel
+        // wraps every packet inside the MAX transport, so a 1500-byte inner MTU
+        // forces the outer path to fragment, which tanks throughput. 1400 leaves
+        // headroom for the wrapper headers and avoids fragmentation.
+        private const val TUN_MTU = 1400
         private const val DNS_GW = "26.26.26.1:8091"
-        private const val LOG_LEVEL = "3"
+        // Error-only. Higher levels log per-connection on the data path and choke
+        // throughput.
+        private const val LOG_LEVEL = "1"
     }
 
     fun start(
